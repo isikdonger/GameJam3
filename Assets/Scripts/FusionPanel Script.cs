@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.U2D;
 using UnityEngine.UI;
 
@@ -19,6 +20,7 @@ public class FusionPanelScript : MonoBehaviour
     public Sprite[] elements;
     public Sprite[] mixings;
     private Image[] element_panels;
+    AudioManager audioManager;
     private bool selected = false, fused = false;
     int sumIndex = 0;
     private void Awake()
@@ -34,6 +36,7 @@ public class FusionPanelScript : MonoBehaviour
         rightPanel.gameObject.transform.GetChild(0).GetComponent<Image>().enabled = false;
         topPanel = GameObject.Find("MixPanel");
         topPanel.gameObject.transform.GetChild(0).GetComponent<Image>().enabled = false;
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
     }
     private void Start()
     {
@@ -59,6 +62,8 @@ public class FusionPanelScript : MonoBehaviour
             {
                 fusionPanel.SetActive(true);
                 Time.timeScale = 0;
+                audioManager.PlaySFX(audioManager.pressingControlPanel);
+
                 //player.SetActive(false);
             }
         }
@@ -77,23 +82,38 @@ public class FusionPanelScript : MonoBehaviour
         {
             if (!selected)
             {
-                leftPanel.gameObject.transform.GetChild(0).GetComponent<Image>().enabled = true;
-                leftPanel.gameObject.transform.GetChild(0).GetComponent<Image>().sprite = clickedButton.gameObject.transform.GetChild(0).GetComponent<Image>().sprite;
+                leftPanel.transform.GetChild(0).GetComponent<Image>().enabled = true;
+                leftPanel.transform.GetChild(0).GetComponent<Image>().sprite = clickedButton.transform.GetChild(0).GetComponent<Image>().sprite;
                 selected = true;
-                sumIndex += System.Array.IndexOf(elements, clickedButton.gameObject.transform.GetChild(0).GetComponent<Image>().sprite);
+                sumIndex += System.Array.IndexOf(elements, clickedButton.transform.GetChild(0).GetComponent<Image>().sprite);
             }
             else
             {
-                rightPanel.gameObject.transform.GetChild(0).GetComponent<Image>().enabled = true;
-                rightPanel.gameObject.transform.GetChild(0).GetComponent<Image>().sprite = clickedButton.gameObject.transform.GetChild(0).GetComponent<Image>().sprite;
-                topPanel.gameObject.transform.GetChild(0).GetComponent<Image>().enabled = true;
-                sumIndex += System.Array.IndexOf(elements, clickedButton.gameObject.transform.GetChild(0).GetComponent<Image>().sprite);
+                rightPanel.transform.GetChild(0).GetComponent<Image>().enabled = true;
+                rightPanel.transform.GetChild(0).GetComponent<Image>().sprite = clickedButton.transform.GetChild(0).GetComponent<Image>().sprite;
+                topPanel.transform.GetChild(0).GetComponent<Image>().enabled = true;
+                sumIndex += System.Array.IndexOf(elements, clickedButton.transform.GetChild(0).GetComponent<Image>().sprite);
                 sumIndex -= sumIndex == 5 ? 3 : 1;
-                topPanel.gameObject.transform.GetChild(0).GetComponent<Image>().sprite = mixings[sumIndex];
+                topPanel.transform.GetChild(0).GetComponent<Image>().sprite = mixings[sumIndex];
                 fused = true;
+
+                // Start the end credits sequence
+                StartCoroutine(HandleEndCredits(sumIndex));
             }
             clickedButton.GetComponent<Button>().enabled = false;
         }
     }
-    
+    private IEnumerator HandleEndCredits(int index)
+    {
+        // Load Win or Lose scene based on the index
+        string sceneToLoad = index == 0 ? "Win" : "Lose";
+        SceneManager.LoadScene(sceneToLoad);
+
+        // Wait ? seconds on the end scene before exiting
+        yield return new WaitForSeconds(0.5f);
+
+        // Quit the application
+        Application.Quit();
+    }
+
 }

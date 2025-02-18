@@ -14,6 +14,13 @@ public class PlayerMovement : MonoBehaviour
     private float minY = -3.9f;
     private float maxY = 3.9f;
 
+    AudioManager audioManager;
+
+    private void Awake()
+    {
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -26,11 +33,14 @@ public class PlayerMovement : MonoBehaviour
         {
             spriteRenderer.flipX = true;
             animator.SetFloat("move", -horizontalInput);
+            audioManager.PlaySFX(audioManager.playerWalking);
         }
         else if (horizontalInput > 0)
         {
             spriteRenderer.flipX = false;
             animator.SetFloat("move", horizontalInput);
+            audioManager.PlaySFX(audioManager.playerWalking);
+
         }
         else
         {

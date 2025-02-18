@@ -7,9 +7,16 @@ public class Attack : MonoBehaviour
     public float distance = 2f;
     public int hit = 0, oreStrength = 3;
     private GameObject ore;
-    public static Dictionary<int, bool> ores = new Dictionary<int, bool>() { { 0, true }, { 1, true }, { 2, true } };
-    private int index=0;
+    private bool mined = false;
+    public static Dictionary<int, bool> ores = new Dictionary<int, bool>() { { 0, false }, { 1, false }, { 2, false } };
+
+    AudioManager audioManager;
     // Start is called before the first frame update
+
+    private void Awake()
+    {
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();    
+    }
     void Start()
     {
         ore = GameObject.FindGameObjectWithTag("Ore");
@@ -22,6 +29,7 @@ public class Attack : MonoBehaviour
         {
             Animator animator = GetComponent<Animator>();
             animator.SetBool("Attack", true);
+            
         }
         else if (!Input.GetKeyDown(KeyCode.X))
         {
@@ -41,17 +49,19 @@ public class Attack : MonoBehaviour
                 //enemy.SetActive(false);
             }
         }
-        if (Vector2.Distance(this.transform.position, ore.transform.position) <= distance)
+        if (!mined && Vector2.Distance(this.transform.position, ore.transform.position) <= distance)
         {
             if (hit < oreStrength)
             {
+                audioManager.PlaySFX(audioManager.hittingStone);
                 hit++;
                 ore.transform.localScale *= 0.75f;
             }
             else
             {
-                ores[index] = true;
+                ores[CombatMovement.currentSceneIndex] = true;
                 Destroy(ore);
+                mined = true;
             }
         }
     }

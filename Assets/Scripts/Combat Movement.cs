@@ -1,15 +1,9 @@
-using NUnit.Framework;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net.NetworkInformation;
-using Unity.Burst.Intrinsics;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 using UnityEngine.U2D;
 using UnityEngine.UIElements.Experimental;
 using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 
 public class CombatMovement : MonoBehaviour
 {
@@ -21,14 +15,24 @@ public class CombatMovement : MonoBehaviour
     public float groundCheckRadius;
     private GameObject ground;
     private BoxCollider2D box;
+    Animator animator;
 
     // Camera boundaries
     private float minX = -7.75f;
     private float maxX = 7.75f;
     private float minY = -3.9f;
     private float maxY = 3.9f;
-    Animator animator;
 
+    //Scene Manager
+    public static int currentSceneIndex = 0;
+    private string[] scenes = { "CombatScene 1", "CombatScene 2", "FusionScene" };
+
+    AudioManager audioManager;
+
+    private void Awake()
+    {
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+    }
     private void Start()
     {
         animator = GetComponent<Animator>();
@@ -45,11 +49,14 @@ public class CombatMovement : MonoBehaviour
         {
             spriteRenderer.flipX = true;
             animator.SetFloat("speed", -horizontalInput);
+            audioManager.PlaySFX(audioManager.playerWalking);
         }
         else if (horizontalInput > 0)
         {
             spriteRenderer.flipX = false;
             animator.SetFloat("speed", horizontalInput);
+            audioManager.PlaySFX(audioManager.playerWalking);
+
         }
         else
         {
@@ -62,6 +69,7 @@ public class CombatMovement : MonoBehaviour
             {
                 animator.SetBool("Jump", true);
                 GetComponent<Rigidbody2D>().AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
+                audioManager.PlaySFX(audioManager.jump);
             }
             else if (!Input.GetKey(KeyCode.Space)) // Check if Space is not pressed
             {
@@ -88,5 +96,11 @@ public class CombatMovement : MonoBehaviour
         float clampedY = Mathf.Clamp(transform.position.y, minY, maxY);
 
         transform.position = new Vector3(clampedX, clampedY, transform.position.z);
+
+        // Check if the player reached the right border
+        if (transform.position.x >= maxX)
+        {
+            SceneManager.LoadScene(scenes[currentSceneIndex++], LoadSceneMode.Single);
+        }
     }
 }

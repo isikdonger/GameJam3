@@ -6,7 +6,37 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/StartMenu.unity
+    guid: 06376a402428a8c419091985c2619be8
+  - enabled: 1
+    path: Assets/Scenes/OpenScene1.unity
+    guid: e684bddb037a2724181b9d268884cdb2
+  - enabled: 1
+    path: Assets/Scenes/OpenScene2.unity
+    guid: a774e8651d5286841ae194f93ecd6c64
+  - enabled: 1
+    path: Assets/Scenes/OpenScene3.unity
+    guid: 2d8346b4c322dcc4db7c8d3c7893393e
+  - enabled: 1
+    path: Assets/Scenes/CombatScene.unity
+    guid: 5f3c829a3f2f36343bc40a0eec904639
+  - enabled: 1
+    path: Assets/Scenes/CombatScene 1.unity
+    guid: d08babed50685454e9ead328821b15b6
+  - enabled: 1
+    path: Assets/Scenes/CombatScene 2.unity
+    guid: 2f38116008ecc214ca1e121f13c95f12
+  - enabled: 1
     path: Assets/Scenes/FusionScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/Win.unity
+    guid: e57f23d8c6ac9c84581f42d44f47fcd2
+  - enabled: 1
+    path: Assets/Scenes/Death.unity
+    guid: 599ce33d2c5a9fa48a1120821d18781e
+  - enabled: 1
+    path: Assets/Scenes/Lose.unity
+    guid: 3f87adb9e06cef04bab53165997d1831
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
