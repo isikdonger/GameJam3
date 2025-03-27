@@ -80,7 +80,7 @@ public class CombatMovement : MonoBehaviour
         else
         {
             Rigidbody2D rg = GetComponent<Rigidbody2D>();
-            animator.SetFloat("vertical", rg.velocity.y);
+            animator.SetFloat("vertical", rg.linearVelocity.y);
         }
         // Jump when pressing Space and the player is grounded
 
